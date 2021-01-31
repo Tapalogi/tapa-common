@@ -5,7 +5,7 @@ use serde_yaml::{from_slice, from_str, to_string, to_vec};
 
 pub trait IYamlSerializable<T = Self>
 where
-    Self: DeserializeOwned + Serialize + Clone + Send + Sized,
+    Self: DeserializeOwned + Serialize + Send + Sized,
 {
     fn from_yaml_string(yaml_string: &str) -> AnyResult<Self> {
         Ok(from_str::<Self>(yaml_string)?)

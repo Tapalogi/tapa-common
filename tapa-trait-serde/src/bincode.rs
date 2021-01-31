@@ -5,7 +5,7 @@ use serde::Serialize;
 
 pub trait IBincodeSerializable<T = Self>
 where
-    Self: DeserializeOwned + Serialize + Clone + Send + Sized,
+    Self: DeserializeOwned + Serialize + Send + Sized,
 {
     fn from_bincode_bytes(bincode_slice: &[u8]) -> AnyResult<Self> {
         Ok(deserialize(bincode_slice)?)

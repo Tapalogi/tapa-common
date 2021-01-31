@@ -5,7 +5,7 @@ use serde_json::{from_slice, from_str, to_string, to_string_pretty, to_vec, to_v
 
 pub trait IJsonSerializable<T = Self>
 where
-    Self: DeserializeOwned + Serialize + Clone + Send + Sized,
+    Self: DeserializeOwned + Serialize + Send + Sized,
 {
     fn from_json_string(json_string: &str) -> AnyResult<Self> {
         Ok(from_str::<Self>(json_string)?)

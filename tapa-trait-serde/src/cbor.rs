@@ -5,7 +5,7 @@ use serde_cbor::{from_slice, to_vec};
 
 pub trait ICborSerializable<T = Self>
 where
-    Self: DeserializeOwned + Serialize + Clone + Send + Sized,
+    Self: DeserializeOwned + Serialize + Send + Sized,
 {
     fn from_cbor_bytes(cbor_slice: &[u8]) -> AnyResult<Self> {
         Ok(from_slice(cbor_slice)?)
