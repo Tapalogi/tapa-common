@@ -1,7 +1,7 @@
 [package]
 name = "tapa-trait-serde"
 version = "0.1.0"
-authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>"]
+authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>", "Tapalogi Collaborators"]
 edition = "2018"
 license-file = "LICENSE"
 readme = "README.md"
@@ -13,6 +13,7 @@ categories = ["data-structures"]
 
 [dependencies]
 bincode = "1.3.1"
+flexbuffers = "0.2.2"
 serde = { version = "1.0.123", features = ["derive"] }
 serde_cbor = { version = "0.11.1", features = ["tags"] }
 serde_json = { version = "1.0.61", features = ["preserve_order", "arbitrary_precision"] }
