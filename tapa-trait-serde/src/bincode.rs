@@ -7,11 +7,11 @@ pub trait IBincodeSerializable<T = Self>
 where
     Self: DeserializeOwned + Serialize + Clone + Send + Sized,
 {
-    fn from_bincode(bincode_slice: &[u8]) -> AnyResult<Self> {
+    fn from_bincode_bytes(bincode_slice: &[u8]) -> AnyResult<Self> {
         Ok(deserialize(bincode_slice)?)
     }
 
-    fn to_bincode(&self) -> Vec<u8> {
+    fn to_bincode_bytes(&self) -> Vec<u8> {
         serialize(self).unwrap()
     }
 }

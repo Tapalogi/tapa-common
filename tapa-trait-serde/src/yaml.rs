@@ -11,7 +11,7 @@ where
         Ok(from_str::<Self>(yaml_string)?)
     }
 
-    fn from_yaml_slice(yaml_slice: &[u8]) -> AnyResult<Self> {
+    fn from_yaml_bytes(yaml_slice: &[u8]) -> AnyResult<Self> {
         Ok(from_slice::<Self>(yaml_slice)?)
     }
 
@@ -19,7 +19,7 @@ where
         to_string(self).unwrap()
     }
 
-    fn to_yaml_vec(&self) -> Vec<u8> {
+    fn to_yaml_bytes(&self) -> Vec<u8> {
         to_vec(self).unwrap()
     }
 }

@@ -11,7 +11,7 @@ where
         Ok(from_str::<Self>(json_string)?)
     }
 
-    fn from_json_slice(json_slice: &[u8]) -> AnyResult<Self> {
+    fn from_json_bytes(json_slice: &[u8]) -> AnyResult<Self> {
         Ok(from_slice::<Self>(json_slice)?)
     }
 
@@ -23,11 +23,11 @@ where
         to_string_pretty(self).unwrap()
     }
 
-    fn to_json_vec(&self) -> Vec<u8> {
+    fn to_json_bytes(&self) -> Vec<u8> {
         to_vec(self).unwrap()
     }
 
-    fn to_json_vec_pretty(&self) -> Vec<u8> {
+    fn to_json_bytes_pretty(&self) -> Vec<u8> {
         to_vec_pretty(self).unwrap()
     }
 }
