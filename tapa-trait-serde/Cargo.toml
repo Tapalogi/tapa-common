@@ -1,17 +1,34 @@
 [package]
 name = "tapa-trait-serde"
 version = "0.1.0"
-authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>", "Tapalogi Collaborators"]
+authors = [
+    "Aditya Kresna <aditya.kresna@outlook.co.id>",
+    "Tapalogi Collaborators",
+]
 edition = "2018"
 license-file = "LICENSE"
 readme = "README.md"
 description = "A collection of Tapalogi's reusable crates."
 repository = "https://github.com/Tapalogi/tapa-common"
 homepage = "https://crates.io/crates/tapa-trait-serde"
-keywords = ["shared", "common", "trait", "serde", "tapa"]
+keywords = [
+    "shared",
+    "common",
+    "reusable",
+    "trait",
+    "serde",
+    "tapa",
+    "json", 
+    "cbor",
+    "yaml",
+    "bincode",
+    "flexbuffers",
+    "toml",
+]
 categories = ["data-structures"]
 
 [dependencies]
+anyhow = "1.0.38"
 bincode = "1.3.1"
 flexbuffers = "0.2.2"
 serde = { version = "1.0.123", features = ["derive"] }
