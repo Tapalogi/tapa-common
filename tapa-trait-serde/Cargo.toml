@@ -17,13 +17,6 @@ keywords = [
     "reusable",
     "trait",
     "serde",
-    "tapa",
-    "json", 
-    "cbor",
-    "yaml",
-    "bincode",
-    "flexbuffers",
-    "toml",
 ]
 categories = ["data-structures"]
 
