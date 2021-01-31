@@ -23,3 +23,15 @@ pub use crate::json::IJsonSerializable;
 pub use crate::toml::ITomlSerializable;
 #[cfg(feature = "yaml")]
 pub use crate::yaml::IYamlSerializable;
+#[cfg(feature = "bincode")]
+pub use tapa_trait_serde_derive::IBincodeSerializable;
+#[cfg(feature = "cbor")]
+pub use tapa_trait_serde_derive::ICborSerializable;
+#[cfg(feature = "flexbuffers")]
+pub use tapa_trait_serde_derive::IFlexbuffersSerializable;
+#[cfg(feature = "json")]
+pub use tapa_trait_serde_derive::IJsonSerializable;
+#[cfg(feature = "toml")]
+pub use tapa_trait_serde_derive::ITomlSerializable;
+#[cfg(feature = "yaml")]
+pub use tapa_trait_serde_derive::IYamlSerializable;
