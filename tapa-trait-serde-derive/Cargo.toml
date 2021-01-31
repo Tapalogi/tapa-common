@@ -1,0 +1,28 @@
+[package]
+name = "tapa-trait-serde-derive"
+version = "0.1.0"
+authors = [
+    "Aditya Kresna <aditya.kresna@outlook.co.id>",
+    "Tapalogi Collaborators",
+]
+edition = "2018"
+license = "MIT"
+readme = "README.md"
+description = "A collection of Tapalogi's reusable crates."
+repository = "https://github.com/Tapalogi/tapa-common"
+homepage = "https://crates.io/crates/tapa-trait-serde-derive"
+keywords = [
+    "shared",
+    "common",
+    "reusable",
+    "trait",
+    "serde",
+]
+categories = ["data-structures"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "1.0.8"
+syn = "1.0.60"
