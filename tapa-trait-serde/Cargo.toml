@@ -6,7 +6,7 @@ authors = [
     "Tapalogi Collaborators",
 ]
 edition = "2018"
-license-file = "LICENSE"
+license = "MIT"
 readme = "README.md"
 description = "A collection of Tapalogi's reusable crates."
 repository = "https://github.com/Tapalogi/tapa-common"
