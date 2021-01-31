@@ -1,0 +1,12 @@
+[package]
+name = "tapa-trait-serde"
+version = "0.1.0"
+authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>"]
+edition = "2018"
+license-file = "LICENSE"
+readme = "README.md"
+description = "A collection of Tapalogi's reusable crates."
+repository = "https://github.com/Tapalogi/tapa-common"
+homepage = "https://crates.io/crates/tapa-trait-serde"
+keywords = ["shared", "common", "trait", "serde", "tapa"]
+categories = ["data-structures"]
