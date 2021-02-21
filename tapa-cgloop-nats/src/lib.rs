@@ -15,7 +15,7 @@ pub enum ProcessResult {
 
 #[async_trait]
 pub trait NatsMessageHandler: Sync {
-    async fn handle_message<'a>(&self, message: &'a NatsMessage) -> AnyResult<ProcessResult>;
+    async fn handle_message<'a>(&mut self, message: &'a NatsMessage) -> AnyResult<ProcessResult>;
 }
 
 pub struct CGLoop {
@@ -50,7 +50,7 @@ impl CGLoop {
         self,
         options: NatsOptions,
         shutdown_flag: Arc<AtomicBool>,
-        on_message: &dyn NatsMessageHandler,
+        on_message: &mut dyn NatsMessageHandler,
     ) -> AnyResult<()> {
         let connection = options.connect(&self.url).await?;
         let subscription = connection.queue_subscribe(&self.source_topic, &self.group).await?;
