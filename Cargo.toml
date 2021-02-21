@@ -2,4 +2,5 @@
 members = [
     "tapa-trait-serde",
     "tapa-trait-serde-derive",
+    "tapa-cgloop-nats"
 ]
