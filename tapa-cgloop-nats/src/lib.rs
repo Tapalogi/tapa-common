@@ -1,21 +1,21 @@
 pub use anyhow::Result as AnyResult;
-pub use async_nats::{Message as NatsMessage, Options as NatsOptions};
-pub use futures::Future;
+pub use futures::{Future, FutureExt, TryFutureExt, TryStreamExt};
+pub use nats::{Message as NatsMessage, Options as NatsOptions};
 
-use async_trait::async_trait;
+use blocking::unblock;
 use bytes::Bytes;
-use log::debug;
+use log::{debug, error};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::time::Duration;
+
+pub trait NatsMessageHandler: Sync + Send {
+    fn handle_message(&mut self, message: &NatsMessage) -> AnyResult<ProcessResult>;
+}
 
 pub enum ProcessResult {
     Success(Bytes),
     Failure(Bytes),
-}
-
-#[async_trait]
-pub trait NatsMessageHandler: Sync {
-    async fn handle_message<'a>(&mut self, message: &'a NatsMessage) -> AnyResult<ProcessResult>;
 }
 
 pub struct CGLoop {
@@ -25,6 +25,7 @@ pub struct CGLoop {
     pub failure_topic: String,
     pub group: String,
     pub unsub_on_exit: bool,
+    pub timeout: Duration,
 }
 
 impl CGLoop {
@@ -35,7 +36,14 @@ impl CGLoop {
         failure_topic: &str,
         group: &str,
         unsub_on_exit: bool,
+        timeout: Option<Duration>,
     ) -> Self {
+        let timeout = if let Some(timeout_value) = timeout {
+            timeout_value
+        } else {
+            Duration::from_millis(500)
+        };
+
         Self {
             url: url.into(),
             source_topic: source_topic.into(),
@@ -43,6 +51,7 @@ impl CGLoop {
             failure_topic: failure_topic.into(),
             group: group.into(),
             unsub_on_exit,
+            timeout,
         }
     }
 
@@ -50,35 +59,86 @@ impl CGLoop {
         self,
         options: NatsOptions,
         shutdown_flag: Arc<AtomicBool>,
-        on_message: &mut dyn NatsMessageHandler,
+        on_message: Box<dyn NatsMessageHandler>,
     ) -> AnyResult<()> {
-        let connection = options.connect(&self.url).await?;
-        let subscription = connection.queue_subscribe(&self.source_topic, &self.group).await?;
+        let mut on_message = on_message;
 
-        while !shutdown_flag.load(Ordering::Relaxed) {
-            if let Some(received_message) = subscription.next().await {
-                match on_message.handle_message(&received_message).await? {
-                    ProcessResult::Failure(failure_message) => {
-                        connection.publish(&self.failure_topic, &failure_message).await?;
-                        debug!(
-                            "Failure message sent to topic {} with size {} bytes",
-                            &self.failure_topic,
-                            failure_message.len()
-                        );
-                    }
-                    ProcessResult::Success(success_message) => {
-                        connection.publish(&self.success_topic, &success_message).await?;
-                        debug!(
-                            "Failure message sent to topic {} with size {} bytes",
-                            &self.success_topic,
-                            success_message.len()
-                        );
+        let _ = unblock(move || {
+            let connection;
+
+            if let Ok(new_connection) = options.connect(&self.url) {
+                connection = new_connection;
+            } else {
+                error!("Unable to connect to {}", &self.url);
+                panic!();
+            }
+
+            if connection.flush_timeout(self.timeout).is_err() {
+                error!("Unable to set flush timeout to {:#?}", self.timeout);
+                panic!();
+            }
+
+            let subscription;
+
+            if let Ok(queue_subscription) =
+                connection.queue_subscribe(&self.source_topic, &self.group)
+            {
+                subscription = queue_subscription;
+            } else {
+                error!(
+                    "Unable to do queue subscription to subject {} queue {}",
+                    &self.source_topic, &self.group
+                );
+                panic!();
+            }
+
+            while !shutdown_flag.load(Ordering::Relaxed) {
+                if let Ok(received_message) = subscription.next_timeout(self.timeout) {
+                    match on_message.handle_message(&received_message) {
+                        Err(error) => {
+                            error!("{}", error);
+                        }
+                        Ok(process_result) => match process_result {
+                            ProcessResult::Failure(failure_message) => {
+                                let message_len = failure_message.len();
+
+                                if let Err(error) =
+                                    connection.publish(&self.failure_topic, &failure_message)
+                                {
+                                    error!("{}", error);
+                                } else {
+                                    debug!(
+                                        "Failure message sent to topic {} with size {} bytes",
+                                        &self.failure_topic, message_len
+                                    );
+                                }
+                            }
+                            ProcessResult::Success(success_message) => {
+                                let message_len = success_message.len();
+
+                                if let Err(error) =
+                                    connection.publish(&self.success_topic, &success_message)
+                                {
+                                    error!("{}", error);
+                                } else {
+                                    debug!(
+                                        "Success message sent to topic {} with size {} bytes",
+                                        &self.success_topic, message_len
+                                    );
+                                }
+                            }
+                        },
                     }
                 }
             }
-        }
 
-        debug!("Loop exited");
+            debug!("Exiting...");
+
+            if self.unsub_on_exit {
+                subscription.unsubscribe().unwrap();
+            }
+        })
+        .await;
 
         Ok(())
     }
