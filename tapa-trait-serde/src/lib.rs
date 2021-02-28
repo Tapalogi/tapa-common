@@ -6,6 +6,8 @@ mod cbor;
 mod flexbuffers;
 #[cfg(feature = "json")]
 mod json;
+#[cfg(feature = "msgpack")]
+mod msgpack;
 #[cfg(feature = "toml")]
 mod toml;
 #[cfg(feature = "yaml")]
@@ -19,6 +21,8 @@ pub use crate::cbor::ICborSerializable;
 pub use crate::flexbuffers::IFlexbuffersSerializable;
 #[cfg(feature = "json")]
 pub use crate::json::IJsonSerializable;
+#[cfg(feature = "msgpack")]
+pub use crate::msgpack::IMessagePackSerializable;
 #[cfg(feature = "toml")]
 pub use crate::toml::ITomlSerializable;
 #[cfg(feature = "yaml")]
@@ -31,6 +35,8 @@ pub use tapa_trait_serde_derive::ICborSerializable;
 pub use tapa_trait_serde_derive::IFlexbuffersSerializable;
 #[cfg(feature = "json")]
 pub use tapa_trait_serde_derive::IJsonSerializable;
+#[cfg(feature = "msgpack")]
+pub use tapa_trait_serde_derive::IMessagePackSerializable;
 #[cfg(feature = "toml")]
 pub use tapa_trait_serde_derive::ITomlSerializable;
 #[cfg(feature = "yaml")]
