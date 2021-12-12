@@ -73,6 +73,20 @@ fn impl_derive_imessagepackserializable(ast: &syn::DeriveInput) -> TokenStream {
     gen.into()
 }
 
+#[proc_macro_derive(IRonSerializable)]
+pub fn macro_derive_ironserializable(input: TokenStream) -> TokenStream {
+    let ast = syn::parse(input).unwrap();
+    impl_derive_ironserializable(&ast)
+}
+
+fn impl_derive_ironserializable(ast: &syn::DeriveInput) -> TokenStream {
+    let name = &ast.ident;
+    let gen = quote! {
+        impl IRonSerializable for #name {}
+    };
+    gen.into()
+}
+
 #[proc_macro_derive(ITomlSerializable)]
 pub fn macro_derive_itomlserializable(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).unwrap();
