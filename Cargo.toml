@@ -1,6 +1,11 @@
 [workspace]
 members = [
-    "tapa-trait-serde",
+    "tapa-cgloop-nats",
     "tapa-trait-serde-derive",
-    "tapa-cgloop-nats"
+    "tapa-trait-serde",
 ]
+
+[patch.crates-io]
+tapa-cgloop-nats = { path = "tapa-cgloop-nats" }
+tapa-trait-serde = { path = "tapa-trait-serde" }
+tapa-trait-serde-derive = { path = "tapa-trait-serde-derive" }
