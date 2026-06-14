@@ -1,0 +1,6 @@
+[project]
+name = "tapalogi-tapa-common"
+slug = "tapalogi-tapa-common"
+
+[amem]
+server = "https://amem.flusci.org"
